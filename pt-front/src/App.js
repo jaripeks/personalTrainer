@@ -10,7 +10,6 @@ const App = () => {
 
   return (
     <div>
-      <button onClick={() => console.log(customers)}>klik</button>
       <TrainingsTable trainings={trainings} />
       <CustomersTable customers={customers} />
     </div>

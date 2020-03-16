@@ -6,7 +6,13 @@ const TrainingsTable = ({ trainings }) => {
     const columns = React.useMemo(() => [
         {
             Header: 'Date',
-            accessor: 'date'
+            accessor: 'date',
+            Cell: ({ cell: { value } }) => {
+                const date = Date.parse(value)
+                return(
+                    new Date(date).toLocaleString()
+                )
+            }
         },
         {
             Header: 'Duration',

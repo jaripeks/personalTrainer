@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTable } from 'react-table'
+import { useTable, useSortBy } from 'react-table'
 import MaUTable from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -14,22 +14,36 @@ import TableRow from '@material-ui/core/TableRow'
  */
 
 const Table = ({ columns, data }) => {
+    //Set up the table hooks
     const {
         getTableProps,
         getTableBodyProps,
         headers,
         rows,
         prepareRow
-    } = useTable({
-        columns,
-        data
-    })
+    } = useTable(
+        {
+            columns,
+            data
+        },
+        useSortBy
+    )
+
     return (
         <MaUTable {...getTableProps()}>
             <TableHead>
                 <TableRow>
                     {headers.map(column =>
-                        <TableCell {...column.getHeaderProps()}>{column.render('Header')}</TableCell>
+                        <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                            {column.render('Header')}
+                            <span>
+                                {column.isSorted 
+                                ? column.isSortedDesc
+                                    ? '🔽'
+                                    : '🔼'
+                                : ''}
+                            </span>
+                        </TableCell>
                     )}
                 </TableRow>
             </TableHead>
