@@ -10,8 +10,8 @@ const App = () => {
 
   return (
     <div>
-      <TrainingsTable trainings={trainings} />
       <CustomersTable customers={customers} />
+      <TrainingsTable trainings={trainings} />
     </div>
   )
 }

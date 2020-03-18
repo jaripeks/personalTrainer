@@ -1,11 +1,25 @@
 import React from 'react'
-import { useTable, useSortBy } from 'react-table'
+import { useTable, useSortBy, useGlobalFilter } from 'react-table'
 import MaUTable from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 
+const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
+    return (
+        <div>
+            Search table:
+            <input
+                value={globalFilter || ''}
+                onChange={event => {
+                    setGlobalFilter(event.target.value || undefined)
+                }}
+            >
+            </input>
+        </div>
+    )
+}
 
 /**
  * General Table component using react-table and material-ui
@@ -20,12 +34,15 @@ const Table = ({ columns, data }) => {
         getTableBodyProps,
         headers,
         rows,
-        prepareRow
+        prepareRow,
+        state,
+        setGlobalFilter
     } = useTable(
         {
             columns,
             data
         },
+        useGlobalFilter,
         useSortBy
     )
 
@@ -33,15 +50,23 @@ const Table = ({ columns, data }) => {
         <MaUTable {...getTableProps()}>
             <TableHead>
                 <TableRow>
+                    <TableCell>
+                        <GlobalFilter
+                            globalFilter={state.globalFilter}
+                            setGlobalFilter={setGlobalFilter}
+                        />
+                    </TableCell>
+                </TableRow>
+                <TableRow>
                     {headers.map(column =>
                         <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
                             {column.render('Header')}
                             <span>
-                                {column.isSorted 
-                                ? column.isSortedDesc
-                                    ? '🔽'
-                                    : '🔼'
-                                : ''}
+                                {column.isSorted
+                                    ? column.isSortedDesc
+                                        ? '🔽'
+                                        : '🔼'
+                                    : ''}
                             </span>
                         </TableCell>
                     )}
@@ -52,7 +77,7 @@ const Table = ({ columns, data }) => {
                     prepareRow(row)
                     return (
                         <TableRow {...row.getRowProps()}>
-                            {row.cells.map(cell => 
+                            {row.cells.map(cell =>
                                 <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
                             )}
                         </TableRow>
