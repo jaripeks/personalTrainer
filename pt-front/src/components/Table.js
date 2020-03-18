@@ -1,25 +1,20 @@
 import React from 'react'
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table'
+import { withStyles } from '@material-ui/core/styles'
 import MaUTable from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
+import SearchIcon from '@material-ui/icons/Search'
+import GlobalFilter from './GlobalFilter'
 
-const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
-    return (
-        <div>
-            Search table:
-            <input
-                value={globalFilter || ''}
-                onChange={event => {
-                    setGlobalFilter(event.target.value || undefined)
-                }}
-            >
-            </input>
-        </div>
-    )
-}
+const HeaderCell = withStyles(theme => ({
+    head: {
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white
+    }
+}))(TableCell)
 
 /**
  * General Table component using react-table and material-ui
@@ -62,10 +57,9 @@ const Table = ({ columns, data, title }) => {
             <MaUTable {...getTableProps()}>
                 <TableHead>
                     <TableRow>
-                        <TableCell>{title}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                        <TableCell>
+                        <TableCell align='center' colSpan={columns.length - 2}>{title}</TableCell>
+                        <TableCell align='right'><SearchIcon /></TableCell>
+                        <TableCell align='left'>
                             <GlobalFilter
                                 globalFilter={state.globalFilter}
                                 setGlobalFilter={setGlobalFilter}
@@ -74,7 +68,7 @@ const Table = ({ columns, data, title }) => {
                     </TableRow>
                     <TableRow>
                         {headers.map(column =>
-                            <TableCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                            <HeaderCell {...column.getHeaderProps(column.getSortByToggleProps())}>
                                 {column.render('Header')}
                                 <span>
                                     {column.isSorted
@@ -83,7 +77,7 @@ const Table = ({ columns, data, title }) => {
                                             : '🔼'
                                         : ''}
                                 </span>
-                            </TableCell>
+                            </HeaderCell>
                         )}
                     </TableRow>
                 </TableHead>
@@ -115,9 +109,9 @@ const Table = ({ columns, data, title }) => {
                             setPageSize(Number(e.target.value))
                         }}
                     >
-                            {[5, 10, 20, 30, 40, 50].map(pageSize => (
+                        {[5, 10, 20, 30, 40, 50].map(pageSize => (
                             <option key={pageSize} value={pageSize}>
-                            Show {pageSize}
+                                Show {pageSize}
                             </option>
                         ))}
                     </select>
