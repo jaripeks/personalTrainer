@@ -27,7 +27,7 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
  * @param { data } is the data in json format for the table
  */
 
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, title }) => {
     //Set up the table hooks
     const {
         getTableProps,
@@ -49,6 +49,9 @@ const Table = ({ columns, data }) => {
     return (
         <MaUTable {...getTableProps()}>
             <TableHead>
+                <TableRow>
+                    <TableCell>{title}</TableCell>
+                </TableRow>
                 <TableRow>
                     <TableCell>
                         <GlobalFilter

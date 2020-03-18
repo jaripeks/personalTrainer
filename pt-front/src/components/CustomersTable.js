@@ -39,7 +39,7 @@ const CustomersTable = ({ customers }) => {
     return (
         <div>
             <CssBaseline />
-            <Table columns={columns} data={data} />
+            <Table columns={columns} data={data} title='Customers' />
         </div>
     )
 }
