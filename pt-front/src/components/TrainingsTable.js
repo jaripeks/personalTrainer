@@ -29,7 +29,7 @@ const TrainingsTable = ({ trainings }) => {
     return (
         <div>
             <CssBaseline />
-            <Table columns={columns} data={data} title='Trainings' />
+            <Table columns={columns} data={data} />
         </div>
     )
 }
