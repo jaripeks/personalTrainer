@@ -21,6 +21,11 @@ const TrainingsTable = ({ trainings }) => {
         {
             Header: 'Activity',
             accessor: 'activity'
+        },
+        {
+            Header: 'Customer',
+            accessor: 'customer',
+            Cell: ({ cell: { value } }) => `${value.firstname} ${value.lastname}`
         }
     ], [])
 

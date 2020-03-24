@@ -23,6 +23,7 @@ const HeaderCell = withStyles(theme => ({
  */
 
 const Table = ({ columns, data }) => {
+
   //Set up the table hooks
   const {
     getTableProps,

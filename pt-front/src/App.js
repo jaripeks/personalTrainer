@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import useResource from './hooks/index'
 import TrainingsTable from './components/TrainingsTable'
@@ -31,9 +31,19 @@ const a11yProps = (index) => {
 }
 
 const App = () => {
-  const [trainings, trainingsService] = useResource('https://customerrest.herokuapp.com/api/trainings')
+  const [trainings, setTrainings] = useState([])
   const [customers, customersService] = useResource('https://customerrest.herokuapp.com/api/customers')
   const [tabValue, setTabValue] = useState(0)
+
+  useEffect(() => {
+    getTrainingsTable()
+  }, [])
+
+  const getTrainingsTable = async () => {
+    const response = await fetch('https://customerrest.herokuapp.com/gettrainings')
+    const data = await response.json()
+    setTrainings(data)
+  }
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue)
@@ -47,12 +57,25 @@ const App = () => {
           <Tab label='Trainings' {...a11yProps(1)} />
         </Tabs>
       </AppBar>
+
       <TabPanel value={tabValue} index={0}>
-        <CustomersTable customers={customers} />
+        {
+          customers.content ?
+            <CustomersTable customers={customers.content} />
+            :
+            <div>...loading</div>
+        }
       </TabPanel>
+
       <TabPanel value={tabValue} index={1}>
-        <TrainingsTable trainings={trainings} />
+        {
+          trainings ?
+            <TrainingsTable trainings={trainings} />
+            :
+            <div>...loading</div>
+        }
       </TabPanel>
+
     </div>
   )
 }
