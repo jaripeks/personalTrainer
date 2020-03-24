@@ -100,7 +100,7 @@ const Table = ({ columns, data }) => {
         <button onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</button>
         {' '}
         <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</button>
-        <div>
+        
           <select
             value={pageSize}
             onChange={e => {
@@ -113,7 +113,7 @@ const Table = ({ columns, data }) => {
               </option>
             ))}
           </select>
-        </div>
+
       </div>
     </div>
   )
