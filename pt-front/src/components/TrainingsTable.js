@@ -21,6 +21,11 @@ const TrainingsTable = ({ trainings }) => {
         {
             Header: 'Activity',
             accessor: 'activity'
+        },
+        {
+            Header: 'Customer',
+            accessor: 'customer',
+            Cell: ({ cell: { value } }) => `${value.firstname} ${value.lastname}`
         }
     ], [])
 
@@ -29,7 +34,7 @@ const TrainingsTable = ({ trainings }) => {
     return (
         <div>
             <CssBaseline />
-            <Table columns={columns} data={data} title='Trainings' />
+            <Table columns={columns} data={data} />
         </div>
     )
 }

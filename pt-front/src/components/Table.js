@@ -10,10 +10,10 @@ import SearchIcon from '@material-ui/icons/Search'
 import GlobalFilter from './GlobalFilter'
 
 const HeaderCell = withStyles(theme => ({
-    head: {
-        backgroundColor: theme.palette.common.black,
-        color: theme.palette.common.white
-    }
+  head: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white
+  }
 }))(TableCell)
 
 /**
@@ -22,103 +22,101 @@ const HeaderCell = withStyles(theme => ({
  * @param { data } is the data in json format for the table
  */
 
-const Table = ({ columns, data, title }) => {
-    //Set up the table hooks
-    const {
-        getTableProps,
-        getTableBodyProps,
-        headers,
-        prepareRow,
-        page,
-        canPreviousPage,
-        canNextPage,
-        pageOptions,
-        pageCount,
-        gotoPage,
-        nextPage,
-        previousPage,
-        setPageSize,
-        state,
-        state: { pageIndex, pageSize },
-        setGlobalFilter
-    } = useTable(
-        {
-            columns,
-            data,
-            initialState: { pageSize: 5 }
-        },
-        useGlobalFilter,
-        useSortBy,
-        usePagination
-    )
+const Table = ({ columns, data }) => {
 
-    return (
+  //Set up the table hooks
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headers,
+    prepareRow,
+    page,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state,
+    state: { pageIndex, pageSize },
+    setGlobalFilter
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageSize: 5 }
+    },
+    useGlobalFilter,
+    useSortBy,
+    usePagination
+  )
+
+  return (
+    <div>
+      <div>
+        <SearchIcon />
+        <GlobalFilter
+          globalFilter={state.globalFilter}
+          setGlobalFilter={setGlobalFilter}
+        />
+      </div>
+      <MaUTable {...getTableProps()}>
+        <TableHead>
+          <TableRow>
+            {headers.map(column =>
+              <HeaderCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                {column.render('Header')}
+                <span>
+                  {column.isSorted
+                    ? column.isSortedDesc
+                      ? '🔽'
+                      : '🔼'
+                    : ''}
+                </span>
+              </HeaderCell>
+            )}
+          </TableRow>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
+          {page.map((row, i) => {
+            prepareRow(row)
+            return (
+              <TableRow {...row.getRowProps()}>
+                {row.cells.map(cell =>
+                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                )}
+              </TableRow>
+            )
+          })}
+        </TableBody>
+      </MaUTable>
+      <div className='pagination'>
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</button>
+        {' '}
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</button>
+        {' '}Page{' '}<strong>{pageIndex + 1} of {pageOptions.length}</strong>{' '}
+        <button onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</button>
+        {' '}
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</button>
         <div>
-            <MaUTable {...getTableProps()}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell align='center' colSpan={columns.length - 2}>{title}</TableCell>
-                        <TableCell align='right'><SearchIcon /></TableCell>
-                        <TableCell align='left'>
-                            <GlobalFilter
-                                globalFilter={state.globalFilter}
-                                setGlobalFilter={setGlobalFilter}
-                            />
-                        </TableCell>
-                    </TableRow>
-                    <TableRow>
-                        {headers.map(column =>
-                            <HeaderCell {...column.getHeaderProps(column.getSortByToggleProps())}>
-                                {column.render('Header')}
-                                <span>
-                                    {column.isSorted
-                                        ? column.isSortedDesc
-                                            ? '🔽'
-                                            : '🔼'
-                                        : ''}
-                                </span>
-                            </HeaderCell>
-                        )}
-                    </TableRow>
-                </TableHead>
-                <TableBody {...getTableBodyProps()}>
-                    {page.map((row, i) => {
-                        prepareRow(row)
-                        return (
-                            <TableRow {...row.getRowProps()}>
-                                {row.cells.map(cell =>
-                                    <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                                )}
-                            </TableRow>
-                        )
-                    })}
-                </TableBody>
-            </MaUTable>
-            <div className='pagination'>
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</button>
-                {' '}
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>{'<'}</button>
-                {' '}Page{' '}<strong>{pageIndex + 1} of {pageOptions.length}</strong>{' '}
-                <button onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</button>
-                {' '}
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</button>
-                <div>
-                    <select
-                        value={pageSize}
-                        onChange={e => {
-                            setPageSize(Number(e.target.value))
-                        }}
-                    >
-                        {[5, 10, 20, 30, 40, 50].map(pageSize => (
-                            <option key={pageSize} value={pageSize}>
-                                Show {pageSize}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
+          <select
+            value={pageSize}
+            onChange={e => {
+              setPageSize(Number(e.target.value))
+            }}
+          >
+            {[5, 10, 20, 30, 40, 50].map(pageSize => (
+              <option key={pageSize} value={pageSize}>
+                Show {pageSize}
+              </option>
+            ))}
+          </select>
         </div>
-    )
+      </div>
+    </div>
+  )
 }
 
 export default Table

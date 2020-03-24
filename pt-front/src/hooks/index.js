@@ -14,13 +14,18 @@ const useResource = (baseUrl) => {
         const getAll = async () => {
             const response = await fetch(baseUrl)
             const data = await response.json()
-            setResources(data.content)
+            setResources(data)
         }
         getAll()
     }, [baseUrl])
 
-    const service = {
+    //test service provided for debugging
+    const logBase = () => {
+        console.log(baseUrl)
+    }
 
+    const service = {
+        logBase
     }
 
     return [
