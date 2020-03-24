@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
  * @param {*} baseUrl is the URL of the API
  */
 
-const useResource = (baseUrl) => {
+export const useResource = (baseUrl) => {
     const [resources, setResources] = useState([])
 
     useEffect(() => {
@@ -24,13 +24,44 @@ const useResource = (baseUrl) => {
         console.log(baseUrl)
     }
 
+    const addResource = async (object) => {
+        const response = await fetch(baseUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(object)
+        })
+        const data = await response.json()
+        return data
+    }
+
     const service = {
-        logBase
+        logBase,
+        addResource
     }
 
     return [
         resources, service
     ]
 }
+
+/**
+ * 
+ */
+export const useField = (type) => {
+    const [value, setValue] = useState('')
+    
+    const onChange = (event) => {
+        setValue(event.target.value)
+    }
+
+    return {
+        type,
+        value,
+        onChange
+    }
+}
+
 
 export default useResource

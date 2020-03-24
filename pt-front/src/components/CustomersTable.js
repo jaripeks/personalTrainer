@@ -36,10 +36,11 @@ const CustomersTable = ({ customers }) => {
 
     const data = React.useMemo(() => customers, [customers])
 
+
     return (
         <div>
             <CssBaseline />
-            <Table columns={columns} data={data} />
+            <Table columns={columns} data={data} title='Customer' />
         </div>
     )
 }

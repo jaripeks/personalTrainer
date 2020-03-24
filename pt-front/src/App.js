@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import useResource from './hooks/index'
+import { useResource } from './hooks'
 import TrainingsTable from './components/TrainingsTable'
 import CustomersTable from './components/CustomersTable'
 import AppBar from '@material-ui/core/AppBar'
