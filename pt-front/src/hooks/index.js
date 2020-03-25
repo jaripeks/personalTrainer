@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
  */
 
 export const useResource = (baseUrl) => {
-    const [resources, setResources] = useState([])
+    const [resources, setResources] = useState({})
 
     useEffect(() => {
         const getAll = async () => {
@@ -25,15 +25,22 @@ export const useResource = (baseUrl) => {
     }
 
     const addResource = async (object) => {
-        const response = await fetch(baseUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(object)
-        })
-        const data = await response.json()
-        return data
+        try {
+            const response = await fetch(baseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            if(!response.ok) {
+                throw new Error(response.statusText)
+            }
+            const data = await response.json()
+            setResources({ ...resources, content: resources.content.concat(data) })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     const service = {

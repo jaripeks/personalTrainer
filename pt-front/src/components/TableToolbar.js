@@ -5,12 +5,18 @@ import AddDialog from './AddDialog'
 
 const TableToolbar = ({
     title,
+    addResource,
     globalFilterState,
     setGlobalFilter
 }) => {
     return (
         <Toolbar>
-            <AddDialog title={title} />
+            {
+                title ?
+                <AddDialog title={title} addResource={addResource} />
+                :
+                ''
+            }
             <GlobalFilter
                 globalFilter={globalFilterState}
                 setGlobalFilter={setGlobalFilter}

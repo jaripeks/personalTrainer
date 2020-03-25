@@ -20,9 +20,10 @@ const initialCustomer = {
         phone: ''
 }
 
-const AddDialog = ({ title }) => {
+const AddDialog = ({ title, addResource }) => {
     const [customer, setCustomer] = useState(initialCustomer)
     const [open, setOpen] = useState(false)
+    const [error, setError] = useState(false)
 
     const handleOpen = () => {
         setOpen(true)
@@ -30,12 +31,36 @@ const AddDialog = ({ title }) => {
 
     const handleClose = () => {
         setOpen(false)
-        console.log(customer)
         setCustomer(initialCustomer)
     }
 
     const handleFieldChange = fieldName => ({ target: { value } }) => {
         setCustomer({ ...customer, [fieldName]: value })
+    }
+
+    const addCustomer = () => {
+        if(checkCustomer()){
+            addResource(customer)
+            handleClose()
+        } else {
+            setError(true)
+        }
+    }
+
+    const checkCustomer = () => {
+        const length =
+            customer.firstname.trim().length +
+            customer.lastname.trim().length +
+            customer.streetaddress.trim().length +
+            customer.postcode.trim().length +
+            customer.city.trim().length +
+            customer.email.trim().length +
+            customer.phone.trim().length
+        return length !== 0
+    }
+
+    const clearError = () => {
+        setError(false)
     }
 
     return (
@@ -45,6 +70,15 @@ const AddDialog = ({ title }) => {
                     <AddCircleIcon />
                 </IconButton>
             </Tooltip>
+            <Dialog open={error} onClose={clearError}>
+                <DialogTitle>ERROR</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>Add atleast 1 character to a field!</DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={clearError} variant='contained' color='primary'>OK</Button>
+                </DialogActions>
+            </Dialog>
             <Dialog open={open} onClose={handleClose}>
                 <DialogTitle>Add {title}</DialogTitle>
                 <DialogContent>
@@ -111,7 +145,7 @@ const AddDialog = ({ title }) => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} variant='contained' color='secondary'>Cancel</Button>
-                    <Button onClick={handleClose} variant='contained' color='primary'>OK</Button>
+                    <Button onClick={addCustomer} variant='contained' color='primary'>OK</Button>
                 </DialogActions>
             </Dialog>
         </>

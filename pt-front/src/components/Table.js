@@ -21,7 +21,7 @@ const HeaderCell = withStyles(theme => ({
  * @param { data } is the data in json format for the table
  */
 
-const Table = ({ columns, data, title }) => {
+const Table = ({ columns, data, title, addResource }) => {
 
   //Set up the table hooks
   const {
@@ -56,6 +56,7 @@ const Table = ({ columns, data, title }) => {
     <div>
       <TableToolbar
         title={title}
+        addResource={addResource}
         globalFilterState={state.globalFilter}
         setGlobalFilter={setGlobalFilter}
       />

@@ -2,7 +2,7 @@ import React from 'react'
 import Table from './Table'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
-const CustomersTable = ({ customers }) => {
+const CustomersTable = ({ customers, addCustomer }) => {
     const columns = React.useMemo(() => [
         {
             Header: 'Firstname',
@@ -40,7 +40,7 @@ const CustomersTable = ({ customers }) => {
     return (
         <div>
             <CssBaseline />
-            <Table columns={columns} data={data} title='Customer' />
+            <Table columns={columns} data={data} addResource={addCustomer} title='Customer' />
         </div>
     )
 }
