@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import useResource from './hooks/index'
+import { useResource } from './hooks'
 import TrainingsTable from './components/TrainingsTable'
 import CustomersTable from './components/CustomersTable'
 import AppBar from '@material-ui/core/AppBar'
@@ -61,7 +61,7 @@ const App = () => {
       <TabPanel value={tabValue} index={0}>
         {
           customers.content ?
-            <CustomersTable customers={customers.content} />
+            <CustomersTable customers={customers.content} addCustomer={customersService.addResource} />
             :
             <div>...loading</div>
         }

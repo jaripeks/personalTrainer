@@ -6,8 +6,7 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import SearchIcon from '@material-ui/icons/Search'
-import GlobalFilter from './GlobalFilter'
+import TableToolbar from './TableToolbar'
 
 const HeaderCell = withStyles(theme => ({
   head: {
@@ -22,7 +21,7 @@ const HeaderCell = withStyles(theme => ({
  * @param { data } is the data in json format for the table
  */
 
-const Table = ({ columns, data }) => {
+const Table = ({ columns, data, title, addResource }) => {
 
   //Set up the table hooks
   const {
@@ -55,13 +54,12 @@ const Table = ({ columns, data }) => {
 
   return (
     <div>
-      <div>
-        <SearchIcon />
-        <GlobalFilter
-          globalFilter={state.globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
-      </div>
+      <TableToolbar
+        title={title}
+        addResource={addResource}
+        globalFilterState={state.globalFilter}
+        setGlobalFilter={setGlobalFilter}
+      />
       <MaUTable {...getTableProps()}>
         <TableHead>
           <TableRow>
