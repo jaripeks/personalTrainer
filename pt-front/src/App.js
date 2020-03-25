@@ -49,6 +49,14 @@ const App = () => {
     setTabValue(newValue)
   }
 
+  const test = (rowIndex, columnId, value) => {
+    console.log(`${rowIndex} - ${columnId} - ${value}`)
+    const customer = customers.content.filter((c, index) => index === rowIndex)[0]
+    console.log(customer)
+    const updatedCustomer = { ...customer, [columnId]: value }
+    console.log(updatedCustomer)
+  }
+
   return (
     <div>
       <AppBar position='static'>
@@ -61,7 +69,7 @@ const App = () => {
       <TabPanel value={tabValue} index={0}>
         {
           customers.content ?
-            <CustomersTable customers={customers.content} addCustomer={customersService.addResource} />
+            <CustomersTable customers={customers.content} customersService={customersService} updateCustomer={test} />
             :
             <div>...loading</div>
         }

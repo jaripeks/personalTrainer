@@ -17,11 +17,11 @@ const HeaderCell = withStyles(theme => ({
 
 /**
  * General Table component using react-table and material-ui
- * @param { columns } are the columns of the table
- * @param { data } is the data in json format for the table
+ * @param columns are the columns of the table
+ * @param data is the data in json format for the table
  */
 
-const Table = ({ columns, data, title, addResource }) => {
+const Table = ({ defaultColumn, columns, data, updateData, skipPageReset, title, addResource }) => {
 
   //Set up the table hooks
   const {
@@ -45,7 +45,10 @@ const Table = ({ columns, data, title, addResource }) => {
     {
       columns,
       data,
-      initialState: { pageSize: 5 }
+      defaultColumn,
+      initialState: { pageSize: 5 },
+      autoResetPage: !skipPageReset,
+      updateData
     },
     useGlobalFilter,
     useSortBy,
@@ -90,6 +93,7 @@ const Table = ({ columns, data, title, addResource }) => {
           })}
         </TableBody>
       </MaUTable>
+      
       <div className='pagination'>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</button>
         {' '}
@@ -98,19 +102,20 @@ const Table = ({ columns, data, title, addResource }) => {
         <button onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</button>
         {' '}
         <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</button>
-        
-          <select
-            value={pageSize}
-            onChange={e => {
-              setPageSize(Number(e.target.value))
-            }}
-          >
-            {[5, 10, 20, 30, 40, 50].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
+        {' '}
+        <span>{title}s per page</span>
+        <select
+          value={pageSize}
+          onChange={e => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[5, 10, 20, 30, 40, 50].map(pageSize => (
+            <option key={pageSize} value={pageSize}>
+              {pageSize}
+            </option>
+          ))}
+        </select>
 
       </div>
     </div>

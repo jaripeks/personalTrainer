@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Table from './Table'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import EditableCell from './EditableCell'
 
-const CustomersTable = ({ customers, addCustomer }) => {
-    const columns = React.useMemo(() => [
+const CustomersTable = ({ customers, customersService, updateCustomer }) => {
+
+    const [skipPageReset, setSkipPageReset] = useState(false)
+    useEffect(() => {
+        setSkipPageReset(false)
+    }, [customers])
+
+    const update = (rowIndex, columnId, value) => {
+        setSkipPageReset(true)
+        updateCustomer(rowIndex, columnId, value)
+    }
+
+    const columns = useMemo(() => [
         {
             Header: 'Firstname',
             accessor: 'firstname'
@@ -34,13 +46,24 @@ const CustomersTable = ({ customers, addCustomer }) => {
         }
     ], [])
 
-    const data = React.useMemo(() => customers, [customers])
+    const data = useMemo(() => customers, [customers])
 
+    const defaultColumn = {
+        Cell: EditableCell
+    }
 
     return (
         <div>
             <CssBaseline />
-            <Table columns={columns} data={data} addResource={addCustomer} title='Customer' />
+            <Table
+                defaultColumn={defaultColumn}
+                columns={columns}
+                data={data}
+                updateData={update}
+                addResource={customersService.addResource}
+                title='Customer'
+                skipPageReset={skipPageReset}
+            />
         </div>
     )
 }

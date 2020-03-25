@@ -12,7 +12,7 @@ const TableToolbar = ({
     return (
         <Toolbar>
             {
-                title ?
+                addResource ?
                 <AddDialog title={title} addResource={addResource} />
                 :
                 ''

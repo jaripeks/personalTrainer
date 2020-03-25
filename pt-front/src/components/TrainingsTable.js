@@ -31,10 +31,12 @@ const TrainingsTable = ({ trainings }) => {
 
     const data = React.useMemo(() => trainings, [trainings])
 
+    const defaultColumn = {}
+
     return (
         <div>
             <CssBaseline />
-            <Table columns={columns} data={data} />
+            <Table defaultColumn={defaultColumn} columns={columns} data={data} title='Training' />
         </div>
     )
 }
