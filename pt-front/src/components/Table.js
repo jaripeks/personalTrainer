@@ -1,29 +1,39 @@
 import React from 'react'
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table'
-import { withStyles } from '@material-ui/core/styles'
 import MaUTable from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableToolbar from './TableToolbar'
+import IconButton from '@material-ui/core/IconButton'
+import CancelIcon from '@material-ui/icons/Cancel'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import EditIcon from '@material-ui/icons/Edit'
+import Head from './Head'
 
-const HeaderCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
-  }
-}))(TableCell)
+
 
 /**
  * General Table component using react-table and material-ui
- * @param { columns } are the columns of the table
- * @param { data } is the data in json format for the table
+ * @param columns are the columns of the table
+ * @param data is the data in json format for the table
  */
 
-const Table = ({ columns, data, title, addResource }) => {
+const Table = ({
+  defaultColumn,
+  columns,
+  data,
+  updateData,
+  skipPageReset,
+  title,
+  addResource,
+  selectedRow,
+  selectRow,
+  submitEdit,
+  cancelEdit
+}) => {
 
-  //Set up the table hooks
+  //Set up the table hooks etc
   const {
     getTableProps,
     getTableBodyProps,
@@ -45,7 +55,10 @@ const Table = ({ columns, data, title, addResource }) => {
     {
       columns,
       data,
-      initialState: { pageSize: 5 }
+      defaultColumn,
+      initialState: { pageSize: 5 },
+      autoResetPage: !skipPageReset,
+      updateData
     },
     useGlobalFilter,
     useSortBy,
@@ -61,35 +74,32 @@ const Table = ({ columns, data, title, addResource }) => {
         setGlobalFilter={setGlobalFilter}
       />
       <MaUTable {...getTableProps()}>
-        <TableHead>
-          <TableRow>
-            {headers.map(column =>
-              <HeaderCell {...column.getHeaderProps(column.getSortByToggleProps())}>
-                {column.render('Header')}
-                <span>
-                  {column.isSorted
-                    ? column.isSortedDesc
-                      ? '🔽'
-                      : '🔼'
-                    : ''}
-                </span>
-              </HeaderCell>
-            )}
-          </TableRow>
-        </TableHead>
+        <Head updateData={updateData} headers={headers} />
         <TableBody {...getTableBodyProps()}>
-          {page.map((row, i) => {
+          {page.map((row) => {
             prepareRow(row)
             return (
               <TableRow {...row.getRowProps()}>
+                {updateData ?
+                  row.index === selectedRow ? 
+                    <TableCell>
+                      <IconButton onClick={() => cancelEdit()}><CancelIcon /></IconButton>
+                      <IconButton onClick={() => submitEdit()}><CheckCircleIcon /></IconButton>
+                    </TableCell>
+                    :
+                    <TableCell><IconButton onClick={() => selectRow(row.index)}><EditIcon /></IconButton></TableCell>
+                  :
+                  null
+                }
                 {row.cells.map(cell =>
-                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                  <TableCell {...cell.getCellProps()}>{cell.render('Cell', { editable: row.index === selectedRow })}</TableCell>
                 )}
               </TableRow>
             )
           })}
         </TableBody>
       </MaUTable>
+
       <div className='pagination'>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</button>
         {' '}
@@ -98,19 +108,20 @@ const Table = ({ columns, data, title, addResource }) => {
         <button onClick={() => nextPage()} disabled={!canNextPage}>{'>'}</button>
         {' '}
         <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>{'>>'}</button>
-        
-          <select
-            value={pageSize}
-            onChange={e => {
-              setPageSize(Number(e.target.value))
-            }}
-          >
-            {[5, 10, 20, 30, 40, 50].map(pageSize => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
+        {' '}
+        <span>{title}s per page</span>
+        <select
+          value={pageSize}
+          onChange={e => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[5, 10, 20, 30, 40, 50].map(pageSize => (
+            <option key={pageSize} value={pageSize}>
+              {pageSize}
+            </option>
+          ))}
+        </select>
 
       </div>
     </div>

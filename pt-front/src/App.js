@@ -34,6 +34,8 @@ const App = () => {
   const [trainings, setTrainings] = useState([])
   const [customers, customersService] = useResource('https://customerrest.herokuapp.com/api/customers')
   const [tabValue, setTabValue] = useState(0)
+  const [selectedRow, setSelectedRow] = useState(9999)
+  const [editedCustomer, setEditedCustomer] = useState({})
 
   useEffect(() => {
     getTrainingsTable()
@@ -49,8 +51,36 @@ const App = () => {
     setTabValue(newValue)
   }
 
+  const handleEdit = (rowIndex, columnId, value) => {
+    const customer = customers.content.filter((c, index) => index === rowIndex)[0]
+    const updatedCustomer = { ...customer, [columnId]: value }
+    setEditedCustomer(updatedCustomer)
+  }
+
+  const submitEdit = () => {
+    if(editedCustomer.firstname){
+      customersService.updateResource(editedCustomer)
+      setSelectedRow(9999)
+      setEditedCustomer({})
+    } else {
+      console.log('no edits')
+      setSelectedRow(9999)
+      setEditedCustomer({})
+    }    
+  }
+
+  const cancelEdit = () => {
+    setSelectedRow(9999)
+    setEditedCustomer({})
+  }
+
+  const selectRow = (rowIndex) => {
+    setSelectedRow(rowIndex)
+  }
+
   return (
     <div>
+      <button onClick={() => console.log(editedCustomer.links)}>test</button>
       <AppBar position='static'>
         <Tabs value={tabValue} onChange={handleTabChange} centered>
           <Tab label='Customers' {...a11yProps(0)} />
@@ -61,7 +91,15 @@ const App = () => {
       <TabPanel value={tabValue} index={0}>
         {
           customers.content ?
-            <CustomersTable customers={customers.content} addCustomer={customersService.addResource} />
+            <CustomersTable
+              customers={customers.content}
+              customersService={customersService}
+              updateCustomer={handleEdit}
+              selectedRow={selectedRow}
+              selectRow={selectRow}
+              submitEdit={submitEdit}
+              cancelEdit={cancelEdit}
+            />
             :
             <div>...loading</div>
         }
