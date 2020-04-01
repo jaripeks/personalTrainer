@@ -66,10 +66,26 @@ export const useResource = (baseUrl) => {
         }
     }
 
+    const deleteResource = async (object) => {
+        const url = object.links.filter(link => link.rel === 'self')[0].href
+        try {
+            await fetch(url, {
+                method: 'DELETE'
+            })
+            setResources({
+                ...resources,
+                content: resources.content.filter(resource => resource.links.filter(link => link.rel === 'self')[0].href !== url)
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const service = {
         logBase,
         addResource,
-        updateResource
+        updateResource,
+        deleteResource
     }
 
     return [

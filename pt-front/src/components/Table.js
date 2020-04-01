@@ -8,6 +8,7 @@ import TableToolbar from './TableToolbar'
 import IconButton from '@material-ui/core/IconButton'
 import CancelIcon from '@material-ui/icons/Cancel'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import EditIcon from '@material-ui/icons/Edit'
 import Head from './Head'
 
@@ -30,7 +31,8 @@ const Table = ({
   selectedRow,
   selectRow,
   submitEdit,
-  cancelEdit
+  cancelEdit,
+  deleteRow
 }) => {
 
   //Set up the table hooks etc
@@ -94,6 +96,7 @@ const Table = ({
                 {row.cells.map(cell =>
                   <TableCell {...cell.getCellProps()}>{cell.render('Cell', { editable: row.index === selectedRow })}</TableCell>
                 )}
+                <TableCell><IconButton onClick={() => deleteRow(row.index)}><DeleteForeverIcon /></IconButton></TableCell>
               </TableRow>
             )
           })}

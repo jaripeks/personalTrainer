@@ -32,6 +32,7 @@ const Head = ({ updateData, headers }) => {
                         </span>
                     </HeaderCell>
                 )}
+                <HeaderCell />
             </TableRow>
         </TableHead>
     )
