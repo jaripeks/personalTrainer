@@ -1,19 +1,17 @@
 import React from 'react'
 import { useTable, useSortBy, useGlobalFilter, usePagination } from 'react-table'
-import { withStyles } from '@material-ui/core/styles'
 import MaUTable from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import TableToolbar from './TableToolbar'
+import IconButton from '@material-ui/core/IconButton'
+import CancelIcon from '@material-ui/icons/Cancel'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import EditIcon from '@material-ui/icons/Edit'
+import Head from './Head'
 
-const HeaderCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white
-  }
-}))(TableCell)
+
 
 /**
  * General Table component using react-table and material-ui
@@ -21,9 +19,21 @@ const HeaderCell = withStyles(theme => ({
  * @param data is the data in json format for the table
  */
 
-const Table = ({ defaultColumn, columns, data, updateData, skipPageReset, title, addResource }) => {
+const Table = ({
+  defaultColumn,
+  columns,
+  data,
+  updateData,
+  skipPageReset,
+  title,
+  addResource,
+  selectedRow,
+  selectRow,
+  submitEdit,
+  cancelEdit
+}) => {
 
-  //Set up the table hooks
+  //Set up the table hooks etc
   const {
     getTableProps,
     getTableBodyProps,
@@ -64,36 +74,32 @@ const Table = ({ defaultColumn, columns, data, updateData, skipPageReset, title,
         setGlobalFilter={setGlobalFilter}
       />
       <MaUTable {...getTableProps()}>
-        <TableHead>
-          <TableRow>
-            {headers.map(column =>
-              <HeaderCell {...column.getHeaderProps(column.getSortByToggleProps())}>
-                {column.render('Header')}
-                <span>
-                  {column.isSorted
-                    ? column.isSortedDesc
-                      ? '🔽'
-                      : '🔼'
-                    : ''}
-                </span>
-              </HeaderCell>
-            )}
-          </TableRow>
-        </TableHead>
+        <Head updateData={updateData} headers={headers} />
         <TableBody {...getTableBodyProps()}>
-          {page.map((row, i) => {
+          {page.map((row) => {
             prepareRow(row)
             return (
               <TableRow {...row.getRowProps()}>
+                {updateData ?
+                  row.index === selectedRow ? 
+                    <TableCell>
+                      <IconButton onClick={() => cancelEdit()}><CancelIcon /></IconButton>
+                      <IconButton onClick={() => submitEdit()}><CheckCircleIcon /></IconButton>
+                    </TableCell>
+                    :
+                    <TableCell><IconButton onClick={() => selectRow(row.index)}><EditIcon /></IconButton></TableCell>
+                  :
+                  null
+                }
                 {row.cells.map(cell =>
-                  <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                  <TableCell {...cell.getCellProps()}>{cell.render('Cell', { editable: row.index === selectedRow })}</TableCell>
                 )}
               </TableRow>
             )
           })}
         </TableBody>
       </MaUTable>
-      
+
       <div className='pagination'>
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>{'<<'}</button>
         {' '}

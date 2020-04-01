@@ -2,9 +2,19 @@ import React, { useState, useEffect, useMemo } from 'react'
 import Table from './Table'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import EditableCell from './EditableCell'
+import IconButton from '@material-ui/core/IconButton'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 
-const CustomersTable = ({ customers, customersService, updateCustomer }) => {
-
+const CustomersTable = ({
+    customers,
+    customersService,
+    updateCustomer,
+    selectedRow,
+    selectRow,
+    submitEdit,
+    cancelEdit,
+    deleteCustomer
+}) => {
     const [skipPageReset, setSkipPageReset] = useState(false)
     useEffect(() => {
         setSkipPageReset(false)
@@ -43,6 +53,10 @@ const CustomersTable = ({ customers, customersService, updateCustomer }) => {
         {
             Header: 'Phone number',
             accessor: 'phone'
+        },
+        {
+            accessor: 'links',
+            Cell: ({ cell: { value } }) => <IconButton onClick={() => console.log(value)}><DeleteForeverIcon /></IconButton>
         }
     ], [])
 
@@ -63,6 +77,10 @@ const CustomersTable = ({ customers, customersService, updateCustomer }) => {
                 addResource={customersService.addResource}
                 title='Customer'
                 skipPageReset={skipPageReset}
+                selectedRow={selectedRow}
+                selectRow={selectRow}
+                submitEdit={submitEdit}
+                cancelEdit={cancelEdit}
             />
         </div>
     )

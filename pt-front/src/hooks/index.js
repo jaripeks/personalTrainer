@@ -43,32 +43,38 @@ export const useResource = (baseUrl) => {
         }
     }
 
+    const updateResource = async (object) => {
+        const url = object.links.filter(link => link.rel === 'self')[0].href
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            if(!response.ok) {
+                throw new Error(response.statusText)
+            }
+            const data = await response.json()
+            setResources({
+                ...resources,
+                content: resources.content.map(resource => resource.links.filter(link => link.rel === 'self')[0].href !== url ? resource : data )
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const service = {
         logBase,
-        addResource
+        addResource,
+        updateResource
     }
 
     return [
         resources, service
     ]
 }
-
-/**
- * 
- */
-export const useField = (type) => {
-    const [value, setValue] = useState('')
-    
-    const onChange = (event) => {
-        setValue(event.target.value)
-    }
-
-    return {
-        type,
-        value,
-        onChange
-    }
-}
-
 
 export default useResource

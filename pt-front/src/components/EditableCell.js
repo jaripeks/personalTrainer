@@ -5,7 +5,8 @@ const EditableCell = ({
     cell: { value: initialValue },
     row: {index },
     column: { id },
-    updateData
+    updateData,
+    editable
 }) => {
     const [value, setValue] = useState(initialValue)
     useEffect(() => {
@@ -18,6 +19,10 @@ const EditableCell = ({
 
     const onBlur = () => {
         updateData(index, id, value)
+    }
+
+    if(!editable) {
+        return(`${initialValue}`)
     }
 
     return (
