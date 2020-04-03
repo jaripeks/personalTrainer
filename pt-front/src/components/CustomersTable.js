@@ -23,7 +23,7 @@ const CustomersTable = ({ customers, customersService, addTraining }) => {
 
     const handleEdit = (rowIndex, columnId, value) => {
         setSkipPageReset(true)
-        const customer = customers.filter((c, index) => index === rowIndex)[0]
+        const customer = customers[rowIndex]
         const updatedCustomer = { ...customer, [columnId]: value }
         setEditedCustomer(updatedCustomer)
     }
@@ -42,6 +42,7 @@ const CustomersTable = ({ customers, customersService, addTraining }) => {
 
     const cancelEdit = () => {
         setSelectedRow(9999)
+        setSkipPageReset(false)
         setEditedCustomer({})
     }
 
