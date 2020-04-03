@@ -1,34 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import useResource from './hooks/index'
+import { useResource } from './hooks'
 import TrainingsTable from './components/TrainingsTable'
 import CustomersTable from './components/CustomersTable'
 import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
-import Typography from '@material-ui/core/Typography'
-import Box from '@material-ui/core/Box'
-
-const TabPanel = ({ children, value, index, ...other }) => {
-  return (
-    <Typography
-      component='div'
-      role='tabpanel'
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  )
-}
-
-const a11yProps = (index) => {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`
-  }
-}
+import TabPanel from './components/TabPanel'
 
 const App = () => {
   const [trainings, setTrainings] = useState([])
@@ -45,6 +23,39 @@ const App = () => {
     setTrainings(data)
   }
 
+  const deleteTraining = async (rowIndex) => {
+    const baseURL = 'https://customerrest.herokuapp.com/api/trainings'
+    try {
+      await fetch(`${baseURL}/${trainings[rowIndex].id}`, {
+        method: 'DELETE'
+      })
+      getTrainingsTable()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const addTraining = async (object) => {
+    const baseURL = 'https://customerrest.herokuapp.com/api/trainings'
+    const customerURL = object.customer.links.filter(link => link.rel === 'self')[0].href
+    const newTraining = { ...object, customer: customerURL }
+    try {
+      const response = await fetch(baseURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newTraining)
+      })
+      if (!response.ok) {
+        throw new Error(response.statusText)
+      }
+      getTrainingsTable()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue)
   }
@@ -53,15 +64,19 @@ const App = () => {
     <div>
       <AppBar position='static'>
         <Tabs value={tabValue} onChange={handleTabChange} centered>
-          <Tab label='Customers' {...a11yProps(0)} />
-          <Tab label='Trainings' {...a11yProps(1)} />
+          <Tab label='Customers' />
+          <Tab label='Trainings' />
         </Tabs>
       </AppBar>
 
       <TabPanel value={tabValue} index={0}>
         {
           customers.content ?
-            <CustomersTable customers={customers.content} />
+            <CustomersTable
+              customers={customers.content}
+              customersService={customersService}
+              addTraining={addTraining}
+            />
             :
             <div>...loading</div>
         }
@@ -70,7 +85,10 @@ const App = () => {
       <TabPanel value={tabValue} index={1}>
         {
           trainings ?
-            <TrainingsTable trainings={trainings} />
+            <TrainingsTable
+              trainings={trainings}
+              deleteTraining={deleteTraining}
+            />
             :
             <div>...loading</div>
         }

@@ -1,9 +1,56 @@
-import React from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Table from './Table'
 import CssBaseline from '@material-ui/core/CssBaseline'
+import EditableCell from './EditableCell'
 
-const CustomersTable = ({ customers }) => {
-    const columns = React.useMemo(() => [
+const CustomersTable = ({ customers, customersService, addTraining }) => {
+    const [skipPageReset, setSkipPageReset] = useState(false)
+    const [selectedRow, setSelectedRow] = useState(9999)
+    const [editedCustomer, setEditedCustomer] = useState({})
+
+    useEffect(() => {
+        setSkipPageReset(false)
+    }, [])
+
+    const handleTrainingAdd = (row, object) => {
+        addTraining({ ...object, customer: customers[row] })
+    }
+
+    const deleteCustomer = (rowIndex) => {
+        setSkipPageReset(true)
+        customersService.deleteResource(customers[rowIndex])
+    }
+
+    const handleEdit = (rowIndex, columnId, value) => {
+        setSkipPageReset(true)
+        const customer = customers[rowIndex]
+        const updatedCustomer = { ...customer, [columnId]: value }
+        setEditedCustomer(updatedCustomer)
+    }
+
+    const submitEdit = () => {
+        if (editedCustomer.firstname) {
+            customersService.updateResource(editedCustomer)
+            setSelectedRow(9999)
+            setEditedCustomer({})
+        } else {
+            console.log('no edits')
+            setSelectedRow(9999)
+            setEditedCustomer({})
+        }
+    }
+
+    const cancelEdit = () => {
+        setSelectedRow(9999)
+        setSkipPageReset(false)
+        setEditedCustomer({})
+    }
+
+    const selectRow = (rowIndex) => {
+        setSelectedRow(rowIndex)
+    }
+
+    const columns = useMemo(() => [
         {
             Header: 'Firstname',
             accessor: 'firstname'
@@ -34,12 +81,30 @@ const CustomersTable = ({ customers }) => {
         }
     ], [])
 
-    const data = React.useMemo(() => customers, [customers])
+    const data = useMemo(() => customers, [customers])
+
+    const defaultColumn = {
+        Cell: EditableCell
+    }
 
     return (
         <div>
             <CssBaseline />
-            <Table columns={columns} data={data} />
+            <Table
+                defaultColumn={defaultColumn}
+                columns={columns}
+                data={data}
+                updateData={handleEdit}
+                addResource={customersService.addResource}
+                title='Customer'
+                skipPageReset={skipPageReset}
+                selectedRow={selectedRow}
+                selectRow={selectRow}
+                submitEdit={submitEdit}
+                cancelEdit={cancelEdit}
+                deleteRow={deleteCustomer}
+                addTraining={handleTrainingAdd}
+            />
         </div>
     )
 }

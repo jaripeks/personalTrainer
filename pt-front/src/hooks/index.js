@@ -7,8 +7,8 @@ import { useState, useEffect } from 'react'
  * @param {*} baseUrl is the URL of the API
  */
 
-const useResource = (baseUrl) => {
-    const [resources, setResources] = useState([])
+export const useResource = (baseUrl) => {
+    const [resources, setResources] = useState({})
 
     useEffect(() => {
         const getAll = async () => {
@@ -24,8 +24,68 @@ const useResource = (baseUrl) => {
         console.log(baseUrl)
     }
 
+    const addResource = async (object) => {
+        try {
+            const response = await fetch(baseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            if(!response.ok) {
+                throw new Error(response.statusText)
+            }
+            const data = await response.json()
+            setResources({ ...resources, content: resources.content.concat(data) })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const updateResource = async (object) => {
+        const url = object.links.filter(link => link.rel === 'self')[0].href
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            if(!response.ok) {
+                throw new Error(response.statusText)
+            }
+            const data = await response.json()
+            setResources({
+                ...resources,
+                content: resources.content.map(resource => resource.links.filter(link => link.rel === 'self')[0].href !== url ? resource : data )
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const deleteResource = async (object) => {
+        const url = object.links.filter(link => link.rel === 'self')[0].href
+        try {
+            await fetch(url, {
+                method: 'DELETE'
+            })
+            setResources({
+                ...resources,
+                content: resources.content.filter(resource => resource.links.filter(link => link.rel === 'self')[0].href !== url)
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     const service = {
-        logBase
+        logBase,
+        addResource,
+        updateResource,
+        deleteResource
     }
 
     return [
