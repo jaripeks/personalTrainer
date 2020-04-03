@@ -88,7 +88,7 @@ const AddTrainingDialog = ({ row, add }) => {
                         autoFocus
                         margin='dense'
                         label='Date'
-                        type='date'
+                        type='datetime-local'
                         fullWidth
                         value={training.date}
                         onChange={handleFieldChange('date')}
