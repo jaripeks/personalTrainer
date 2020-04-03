@@ -21,11 +21,8 @@ const Calendar = ({ trainings }) => {
     }
 
     const getEndTime = (date, minutes) => {
-        console.log(date)
-        console.log(minutes)
         const endTime = new Date(date.getTime() + minutes * 60000)
         console.log(endTime)
-        return endTime
     }
 
     return (
