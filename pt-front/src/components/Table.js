@@ -10,9 +10,9 @@ import CancelIcon from '@material-ui/icons/Cancel'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import EditIcon from '@material-ui/icons/Edit'
 import Head from './Head'
-import DeleteDialog from './DeleteDialog '
-import Button from '@material-ui/core/Button'
+import DeleteDialog from './DeleteDialog'
 import Paper from '@material-ui/core/Paper'
+import AddTrainingDialog from './AddTrainingDialog'
 
 /**
  * General Table component using react-table and material-ui
@@ -68,10 +68,10 @@ const Table = ({
     usePagination
   )
 
-  const addTrainingButton = (row) => <TableCell><Button onClick={() => addTraining(row.index)}>Add training</Button></TableCell>
+  const addTrainingButton = (row) => <TableCell><AddTrainingDialog row={row} add={addTraining} /></TableCell>
 
   const selectedRowButtons = (row) => {
-    return(
+    return (
       <>
         <TableCell>
           <IconButton onClick={() => cancelEdit()}><CancelIcon /></IconButton>
@@ -83,7 +83,7 @@ const Table = ({
   }
 
   const rowButtons = (row) => {
-    return(
+    return (
       <>
         <TableCell><IconButton onClick={() => selectRow(row.index)}><EditIcon /></IconButton></TableCell>
         {addTrainingButton(row)}
@@ -107,7 +107,7 @@ const Table = ({
             return (
               <TableRow {...row.getRowProps()}>
                 {updateData ?
-                  row.index === selectedRow ? 
+                  row.index === selectedRow ?
                     selectedRowButtons(row)
                     :
                     rowButtons(row)

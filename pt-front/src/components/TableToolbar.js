@@ -13,9 +13,9 @@ const TableToolbar = ({
         <Toolbar>
             {
                 addResource ?
-                <AddDialog title={title} addResource={addResource} />
-                :
-                ''
+                    <AddDialog title={title} addResource={addResource} />
+                    :
+                    ''
             }
             <GlobalFilter
                 globalFilter={globalFilterState}

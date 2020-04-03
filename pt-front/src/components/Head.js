@@ -6,13 +6,13 @@ import TableRow from '@material-ui/core/TableRow'
 
 const HeaderCell = withStyles(theme => ({
     head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white
+        backgroundColor: theme.palette.common.black,
+        color: theme.palette.common.white
     }
-  }))(TableCell)
+}))(TableCell)
 
 const Head = ({ updateData, headers }) => {
-    return(
+    return (
         <TableHead>
             <TableRow>
                 {updateData ?
@@ -27,11 +27,11 @@ const Head = ({ updateData, headers }) => {
                     <HeaderCell {...column.getHeaderProps(column.getSortByToggleProps())}>
                         {column.render('Header')}
                         <span>
-                        {column.isSorted
-                            ? column.isSortedDesc
-                            ? '🔽'
-                            : '🔼'
-                            : ''}
+                            {column.isSorted
+                                ? column.isSortedDesc
+                                    ? '🔽'
+                                    : '🔼'
+                                : ''}
                         </span>
                     </HeaderCell>
                 )}
