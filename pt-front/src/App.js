@@ -35,10 +35,25 @@ const App = () => {
     }
   }
 
-  const addTraining = (object) => {
+  const addTraining = async (object) => {
     const baseURL = 'https://customerrest.herokuapp.com/api/trainings'
-    console.log(baseURL)
-    console.log(object)
+    const customerURL = object.customer.links.filter(link => link.rel === 'self')[0].href
+    const newTraining = { ...object, customer: customerURL }
+    try {
+      const response = await fetch(baseURL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newTraining)
+      })
+      if (!response.ok) {
+        throw new Error(response.statusText)
+      }
+      getTrainingsTable()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const handleTabChange = (event, newValue) => {

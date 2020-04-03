@@ -12,8 +12,8 @@ const CustomersTable = ({ customers, customersService, addTraining }) => {
         setSkipPageReset(false)
     }, [])
 
-    const handleTrainingAdd = (row) => {
-        addTraining(customers[row])
+    const handleTrainingAdd = (row, object) => {
+        addTraining({ ...object, customer: customers[row] })
     }
 
     const deleteCustomer = (rowIndex) => {
