@@ -3,7 +3,7 @@ import Table from './Table'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import EditableCell from './EditableCell'
 
-const CustomersTable = ({ customers, customersService }) => {
+const CustomersTable = ({ customers, customersService, addTraining }) => {
     const [skipPageReset, setSkipPageReset] = useState(false)
     const [selectedRow, setSelectedRow] = useState(9999)
     const [editedCustomer, setEditedCustomer] = useState({})
@@ -11,6 +11,10 @@ const CustomersTable = ({ customers, customersService }) => {
     useEffect(() => {
         setSkipPageReset(false)
     }, [])
+
+    const handleTrainingAdd = (row) => {
+        addTraining(customers[row])
+    }
 
     const deleteCustomer = (rowIndex) => {
         setSkipPageReset(true)
@@ -98,6 +102,7 @@ const CustomersTable = ({ customers, customersService }) => {
                 submitEdit={submitEdit}
                 cancelEdit={cancelEdit}
                 deleteRow={deleteCustomer}
+                addTraining={handleTrainingAdd}
             />
         </div>
     )

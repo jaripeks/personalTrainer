@@ -16,7 +16,10 @@ const Head = ({ updateData, headers }) => {
         <TableHead>
             <TableRow>
                 {updateData ?
-                    <HeaderCell />
+                    <>
+                        <HeaderCell />
+                        <HeaderCell />
+                    </>
                     :
                     null
                 }

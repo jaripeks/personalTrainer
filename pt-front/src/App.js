@@ -35,6 +35,12 @@ const App = () => {
     }
   }
 
+  const addTraining = (object) => {
+    const baseURL = 'https://customerrest.herokuapp.com/api/trainings'
+    console.log(baseURL)
+    console.log(object)
+  }
+
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue)
   }
@@ -54,6 +60,7 @@ const App = () => {
             <CustomersTable
               customers={customers.content}
               customersService={customersService}
+              addTraining={addTraining}
             />
             :
             <div>...loading</div>

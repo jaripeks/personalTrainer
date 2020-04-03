@@ -17,7 +17,8 @@ const TrainingsTable = ({ trainings, deleteTraining }) => {
         },
         {
             Header: 'Duration',
-            accessor: 'duration'
+            accessor: 'duration',
+            Cell: ({ cell: { value } }) => `${value} min`
         },
         {
             Header: 'Activity',
@@ -37,7 +38,13 @@ const TrainingsTable = ({ trainings, deleteTraining }) => {
     return (
         <div>
             <CssBaseline />
-            <Table defaultColumn={defaultColumn} columns={columns} data={data} title='Training' deleteRow={deleteTraining} />
+            <Table 
+                defaultColumn={defaultColumn}
+                columns={columns}
+                data={data}
+                title='Training'
+                deleteRow={deleteTraining}
+            />
         </div>
     )
 }
