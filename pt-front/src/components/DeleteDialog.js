@@ -57,7 +57,7 @@ const DeleteDialog = ({ title, content, handleDelete }) => {
                 {getContent()}
                 <DialogActions>
                     <Button onClick={handleClose} variant='contained' color='secondary'>Cancel</Button>
-                    <Button onClick={confirm} variant='contained' color='primary'>OK</Button>
+                    <Button onClick={confirm} variant='contained' color='primary'>Delete</Button>
                 </DialogActions>
             </Dialog>
         </>

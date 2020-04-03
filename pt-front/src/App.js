@@ -7,6 +7,8 @@ import AppBar from '@material-ui/core/AppBar'
 import Tabs from '@material-ui/core/Tabs'
 import Tab from '@material-ui/core/Tab'
 import TabPanel from './components/TabPanel'
+import Calendar from './components/Calendar'
+import Typography from '@material-ui/core/Typography'
 
 const App = () => {
   const [trainings, setTrainings] = useState([])
@@ -63,9 +65,11 @@ const App = () => {
   return (
     <div>
       <AppBar position='static'>
+        <Typography align='center' variant='h4' >Personal trainer</Typography>
         <Tabs value={tabValue} onChange={handleTabChange} centered>
           <Tab label='Customers' />
           <Tab label='Trainings' />
+          <Tab label='Calendar' />
         </Tabs>
       </AppBar>
 
@@ -92,6 +96,10 @@ const App = () => {
             :
             <div>...loading</div>
         }
+      </TabPanel>
+
+      <TabPanel value={tabValue} index={2}>
+        <Calendar trainings={trainings} />
       </TabPanel>
 
     </div>
