@@ -16,7 +16,10 @@ const Head = ({ updateData, headers }) => {
         <TableHead>
             <TableRow>
                 {updateData ?
-                    <HeaderCell />
+                    <>
+                        <HeaderCell />
+                        <HeaderCell />
+                    </>
                     :
                     null
                 }
@@ -32,6 +35,7 @@ const Head = ({ updateData, headers }) => {
                         </span>
                     </HeaderCell>
                 )}
+                <HeaderCell />
             </TableRow>
         </TableHead>
     )

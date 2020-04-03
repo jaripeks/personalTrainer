@@ -2,27 +2,51 @@ import React, { useState, useEffect, useMemo } from 'react'
 import Table from './Table'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import EditableCell from './EditableCell'
-import IconButton from '@material-ui/core/IconButton'
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 
-const CustomersTable = ({
-    customers,
-    customersService,
-    updateCustomer,
-    selectedRow,
-    selectRow,
-    submitEdit,
-    cancelEdit,
-    deleteCustomer
-}) => {
+const CustomersTable = ({ customers, customersService, addTraining }) => {
     const [skipPageReset, setSkipPageReset] = useState(false)
+    const [selectedRow, setSelectedRow] = useState(9999)
+    const [editedCustomer, setEditedCustomer] = useState({})
+
     useEffect(() => {
         setSkipPageReset(false)
-    }, [customers])
+    }, [])
 
-    const update = (rowIndex, columnId, value) => {
+    const handleTrainingAdd = (row) => {
+        addTraining(customers[row])
+    }
+
+    const deleteCustomer = (rowIndex) => {
         setSkipPageReset(true)
-        updateCustomer(rowIndex, columnId, value)
+        customersService.deleteResource(customers[rowIndex])
+    }
+
+    const handleEdit = (rowIndex, columnId, value) => {
+        setSkipPageReset(true)
+        const customer = customers.filter((c, index) => index === rowIndex)[0]
+        const updatedCustomer = { ...customer, [columnId]: value }
+        setEditedCustomer(updatedCustomer)
+    }
+
+    const submitEdit = () => {
+        if (editedCustomer.firstname) {
+            customersService.updateResource(editedCustomer)
+            setSelectedRow(9999)
+            setEditedCustomer({})
+        } else {
+            console.log('no edits')
+            setSelectedRow(9999)
+            setEditedCustomer({})
+        }
+    }
+
+    const cancelEdit = () => {
+        setSelectedRow(9999)
+        setEditedCustomer({})
+    }
+
+    const selectRow = (rowIndex) => {
+        setSelectedRow(rowIndex)
     }
 
     const columns = useMemo(() => [
@@ -53,10 +77,6 @@ const CustomersTable = ({
         {
             Header: 'Phone number',
             accessor: 'phone'
-        },
-        {
-            accessor: 'links',
-            Cell: ({ cell: { value } }) => <IconButton onClick={() => console.log(value)}><DeleteForeverIcon /></IconButton>
         }
     ], [])
 
@@ -73,7 +93,7 @@ const CustomersTable = ({
                 defaultColumn={defaultColumn}
                 columns={columns}
                 data={data}
-                updateData={update}
+                updateData={handleEdit}
                 addResource={customersService.addResource}
                 title='Customer'
                 skipPageReset={skipPageReset}
@@ -81,6 +101,8 @@ const CustomersTable = ({
                 selectRow={selectRow}
                 submitEdit={submitEdit}
                 cancelEdit={cancelEdit}
+                deleteRow={deleteCustomer}
+                addTraining={handleTrainingAdd}
             />
         </div>
     )

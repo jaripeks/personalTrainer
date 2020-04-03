@@ -10,8 +10,9 @@ import CancelIcon from '@material-ui/icons/Cancel'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import EditIcon from '@material-ui/icons/Edit'
 import Head from './Head'
-
-
+import DeleteDialog from './DeleteDialog '
+import Button from '@material-ui/core/Button'
+import Paper from '@material-ui/core/Paper'
 
 /**
  * General Table component using react-table and material-ui
@@ -30,7 +31,9 @@ const Table = ({
   selectedRow,
   selectRow,
   submitEdit,
-  cancelEdit
+  cancelEdit,
+  deleteRow,
+  addTraining
 }) => {
 
   //Set up the table hooks etc
@@ -65,8 +68,31 @@ const Table = ({
     usePagination
   )
 
+  const addTrainingButton = (row) => <TableCell><Button onClick={() => addTraining(row.index)}>Add training</Button></TableCell>
+
+  const selectedRowButtons = (row) => {
+    return(
+      <>
+        <TableCell>
+          <IconButton onClick={() => cancelEdit()}><CancelIcon /></IconButton>
+          <IconButton onClick={() => submitEdit()}><CheckCircleIcon /></IconButton>
+        </TableCell>
+        {addTrainingButton(row)}
+      </>
+    )
+  }
+
+  const rowButtons = (row) => {
+    return(
+      <>
+        <TableCell><IconButton onClick={() => selectRow(row.index)}><EditIcon /></IconButton></TableCell>
+        {addTrainingButton(row)}
+      </>
+    )
+  }
+
   return (
-    <div>
+    <Paper>
       <TableToolbar
         title={title}
         addResource={addResource}
@@ -82,18 +108,16 @@ const Table = ({
               <TableRow {...row.getRowProps()}>
                 {updateData ?
                   row.index === selectedRow ? 
-                    <TableCell>
-                      <IconButton onClick={() => cancelEdit()}><CancelIcon /></IconButton>
-                      <IconButton onClick={() => submitEdit()}><CheckCircleIcon /></IconButton>
-                    </TableCell>
+                    selectedRowButtons(row)
                     :
-                    <TableCell><IconButton onClick={() => selectRow(row.index)}><EditIcon /></IconButton></TableCell>
+                    rowButtons(row)
                   :
                   null
                 }
                 {row.cells.map(cell =>
                   <TableCell {...cell.getCellProps()}>{cell.render('Cell', { editable: row.index === selectedRow })}</TableCell>
                 )}
+                <TableCell><DeleteDialog title={title} content={row.cells} handleDelete={() => deleteRow(row.index)} /></TableCell>
               </TableRow>
             )
           })}
@@ -124,7 +148,7 @@ const Table = ({
         </select>
 
       </div>
-    </div>
+    </Paper>
   )
 }
 

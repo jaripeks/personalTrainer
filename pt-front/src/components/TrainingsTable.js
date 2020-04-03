@@ -2,7 +2,8 @@ import React from 'react'
 import Table from './Table'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
-const TrainingsTable = ({ trainings }) => {
+const TrainingsTable = ({ trainings, deleteTraining }) => {
+    
     const columns = React.useMemo(() => [
         {
             Header: 'Date',
@@ -16,7 +17,8 @@ const TrainingsTable = ({ trainings }) => {
         },
         {
             Header: 'Duration',
-            accessor: 'duration'
+            accessor: 'duration',
+            Cell: ({ cell: { value } }) => `${value} min`
         },
         {
             Header: 'Activity',
@@ -36,7 +38,13 @@ const TrainingsTable = ({ trainings }) => {
     return (
         <div>
             <CssBaseline />
-            <Table defaultColumn={defaultColumn} columns={columns} data={data} title='Training' />
+            <Table 
+                defaultColumn={defaultColumn}
+                columns={columns}
+                data={data}
+                title='Training'
+                deleteRow={deleteTraining}
+            />
         </div>
     )
 }
